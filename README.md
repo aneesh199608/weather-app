@@ -19,7 +19,7 @@ How to Use This Template?
 2. Name your new repo (e.g., `to-do-app`)
 
 3. Clone it:
-   
+
    git clone https://github.com/YOUR_USERNAME/YOUR_NEW_PROJECT.git
    cd YOUR_NEW_PROJECT
    npm install

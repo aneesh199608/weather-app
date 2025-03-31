@@ -22,7 +22,7 @@ label {
   font-weight: bold;
 }
 
-input[type="text"] {
+input[type='text'] {
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -98,7 +98,7 @@ button:disabled {
     align-items: stretch;
   }
 
-  input[type="text"] {
+  input[type='text'] {
     min-width: auto; /* Allow input to shrink */
     margin-bottom: 10px; /* Add space below input */
   }

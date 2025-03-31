@@ -18,6 +18,16 @@ const loadingIndicator = document.getElementById('loading-indicator'); // Assume
 // --- DOM Manipulation Functions ---
 
 /**
+ * Clears any currently displayed error message.
+ */
+export function clearError() {
+  if (errorMessage) {
+    errorMessage.textContent = '';
+    errorMessage.style.display = 'none';
+  }
+}
+
+/**
  * Updates the weather display section with new data.
  * @param {object} weatherData - Processed weather data object.
  *                               Expected structure: { temp, conditions, icon, humidity, windspeed, location, datetime }
@@ -29,11 +39,17 @@ export function updateWeatherDisplay(weatherData) {
   clearError();
 
   // Update text content
-  if (locationName) locationName.textContent = weatherData.location || 'Unknown Location';
-  if (temperature) temperature.textContent = `${weatherData.temp?.toFixed(1)}°C` || 'N/A'; // Use optional chaining and nullish coalescing
+  if (locationName)
+    locationName.textContent = weatherData.location || 'Unknown Location';
+  if (temperature)
+    temperature.textContent = `${weatherData.temp?.toFixed(1)}°C` || 'N/A'; // Use optional chaining and nullish coalescing
   if (conditions) conditions.textContent = weatherData.conditions || 'N/A';
-  if (humidity) humidity.textContent = `Humidity: ${weatherData.humidity?.toFixed(0)}%` || 'N/A';
-  if (windSpeed) windSpeed.textContent = `Wind: ${weatherData.windspeed?.toFixed(1)} km/h` || 'N/A';
+  if (humidity)
+    humidity.textContent =
+      `Humidity: ${weatherData.humidity?.toFixed(0)}%` || 'N/A';
+  if (windSpeed)
+    windSpeed.textContent =
+      `Wind: ${weatherData.windspeed?.toFixed(1)} km/h` || 'N/A';
 
   // Update Icon (Example - uncomment and adapt if using dynamic icons)
   /*
@@ -55,9 +71,8 @@ export function updateWeatherDisplay(weatherData) {
     weatherIcon.style.display = 'none'; // Hide if no icon code
   }
   */
- // Simple fallback if not using dynamic icons:
+  // Simple fallback if not using dynamic icons:
   if (weatherIcon) weatherIcon.style.display = 'none'; // Hide icon element for now
-
 
   // Make the weather display visible if it was hidden
   weatherDisplay.style.display = 'block'; // Or 'flex', 'grid', etc., depending on your layout
@@ -70,7 +85,6 @@ export function showLoadingState() {
   if (loadingIndicator) loadingIndicator.style.display = 'block';
   if (searchButton) searchButton.disabled = true;
   if (weatherDisplay) weatherDisplay.style.display = 'none'; // Hide previous results
-  clearError(); // Clear errors when starting a new search
 }
 
 /**
@@ -94,16 +108,6 @@ export function displayError(message) {
 }
 
 /**
- * Clears any currently displayed error message.
- */
-export function clearError() {
-  if (errorMessage) {
-    errorMessage.textContent = '';
-    errorMessage.style.display = 'none';
-  }
-}
-
-/**
  * Gets the location value from the input field.
  * @returns {string} The trimmed value from the location input field.
  */
@@ -116,17 +120,17 @@ export function getInputLocation() {
  * @param {Function} handler - The function to call when the search is triggered.
  */
 export function addSearchListener(handler) {
-    // Prefer listening to form submission if input is inside a form
-    const form = locationInput?.closest('form');
-    if (form) {
-        form.addEventListener('submit', (event) => {
-            event.preventDefault(); // Prevent page reload
-            handler(); // Call the handler passed from index.js
-        });
-    } else if (searchButton) {
-        // Fallback to button click if not in a form
-        searchButton.addEventListener('click', handler);
-    } else {
-        console.warn('Could not find search form or button to attach listener.');
-    }
+  // Prefer listening to form submission if input is inside a form
+  const form = locationInput?.closest('form');
+  if (form) {
+    form.addEventListener('submit', (event) => {
+      event.preventDefault(); // Prevent page reload
+      handler(); // Call the handler passed from index.js
+    });
+  } else if (searchButton) {
+    // Fallback to button click if not in a form
+    searchButton.addEventListener('click', handler);
+  } else {
+    console.warn('Could not find search form or button to attach listener.');
+  }
 }

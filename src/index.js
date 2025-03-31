@@ -1,5 +1,5 @@
 import './styles.css'; // Import CSS - Webpack will handle this
-import { fetchWeatherData } from './api.js';
+import { fetchWeatherData, getNamedLocation } from './api'; // Import getNamedLocation (Removed .js)
 import {
   updateWeatherDisplay,
   showLoadingState,
@@ -7,8 +7,8 @@ import {
   displayError,
   clearError,
   getInputLocation,
-  addSearchListener
-} from './dom.js';
+  addSearchListener,
+} from './dom'; // Removed .js
 
 /**
  * Parses the raw API data into a simpler format for the DOM.
@@ -30,11 +30,10 @@ function parseWeatherData(data) {
     humidity: current.humidity,
     windspeed: current.windspeed,
     location: data.resolvedAddress,
-    datetime: current.datetimeEpoch * 1000 // Convert seconds to milliseconds
+    datetime: current.datetimeEpoch * 1000, // Convert seconds to milliseconds
     // Add more fields as needed from 'data.days', etc.
   };
 }
-
 
 /**
  * Handles the search process when triggered by the user.
@@ -65,18 +64,6 @@ async function handleSearch() {
 }
 
 /**
- * Initializes the application by setting up event listeners.
- */
-function init() {
-  console.log('Weather App Initializing...');
-  addSearchListener(handleSearch); // Add the manual search listener
-  console.log('Manual search listener added.');
-
-  // Attempt to get weather for current location on load
-  getWeatherForCurrentLocation();
-}
-
-/**
  * Attempts to get the user's current location and fetch weather data for it.
  */
 async function getWeatherForCurrentLocation() {
@@ -95,17 +82,30 @@ async function getWeatherForCurrentLocation() {
       const lat = position.coords.latitude;
       const lon = position.coords.longitude;
       const locationString = `${lat},${lon}`; // Format for Visual Crossing API
-      console.log(`Location found: ${locationString}`);
+      console.log(`Coordinates found: ${locationString}`);
 
       try {
+        // 1. Get the named location from coordinates using Nominatim
+        const namedLocation = await getNamedLocation(lat, lon);
+        console.log(`Named location found: ${namedLocation}`);
+
+        // 2. Fetch weather data using the coordinates
         const rawData = await fetchWeatherData(locationString);
+
+        // 3. Parse the weather data
         const weatherData = parseWeatherData(rawData);
-        // Modify the location name to be more user-friendly if desired
-        // weatherData.location = `Your Current Location (${weatherData.location})`;
+
+        // 4. Override the location in the parsed data with the name from Nominatim
+        weatherData.location = namedLocation; // Use the name we got from Nominatim
+
+        // 5. Update the display
         updateWeatherDisplay(weatherData);
       } catch (error) {
-        console.error('Error fetching weather for current location:', error);
-        displayError(`Failed to get weather for your location: ${error.message}`);
+        // This will catch errors from both getNamedLocation and fetchWeatherData
+        console.error('Error getting location name or weather:', error);
+        displayError(
+          `Failed to get weather for your location: ${error.message}`
+        );
       } finally {
         hideLoadingState();
       }
@@ -115,7 +115,8 @@ async function getWeatherForCurrentLocation() {
       console.error(`Geolocation Error (${error.code}): ${error.message}`);
       let userMessage = 'Could not get your current location.';
       if (error.code === error.PERMISSION_DENIED) {
-        userMessage = 'Location permission denied. Please enter a location manually.';
+        userMessage =
+          'Location permission denied. Please enter a location manually.';
       }
       displayError(userMessage);
       hideLoadingState(); // Hide loading indicator on error
@@ -123,6 +124,17 @@ async function getWeatherForCurrentLocation() {
   );
 }
 
+/**
+ * Initializes the application by setting up event listeners.
+ */
+function init() {
+  console.log('Weather App Initializing...');
+  addSearchListener(handleSearch); // Add the manual search listener
+  console.log('Manual search listener added.');
+
+  // Attempt to get weather for current location on load
+  getWeatherForCurrentLocation();
+}
 
 // --- Application Start ---
 // Run the initialization function when the script loads
