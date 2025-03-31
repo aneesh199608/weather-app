@@ -69,9 +69,60 @@ async function handleSearch() {
  */
 function init() {
   console.log('Weather App Initializing...');
-  addSearchListener(handleSearch); // Add the event listener via the DOM module
-  console.log('Event listener added.');
+  addSearchListener(handleSearch); // Add the manual search listener
+  console.log('Manual search listener added.');
+
+  // Attempt to get weather for current location on load
+  getWeatherForCurrentLocation();
 }
+
+/**
+ * Attempts to get the user's current location and fetch weather data for it.
+ */
+async function getWeatherForCurrentLocation() {
+  if (!navigator.geolocation) {
+    console.log('Geolocation is not supported by this browser.');
+    // Optionally display a message to the user via dom.js
+    // displayError("Geolocation is not supported by your browser.");
+    return; // Exit if geolocation is not available
+  }
+
+  console.log('Attempting to get current location...');
+  showLoadingState(); // Show loading indicator while getting location/weather
+
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      const locationString = `${lat},${lon}`; // Format for Visual Crossing API
+      console.log(`Location found: ${locationString}`);
+
+      try {
+        const rawData = await fetchWeatherData(locationString);
+        const weatherData = parseWeatherData(rawData);
+        // Modify the location name to be more user-friendly if desired
+        // weatherData.location = `Your Current Location (${weatherData.location})`;
+        updateWeatherDisplay(weatherData);
+      } catch (error) {
+        console.error('Error fetching weather for current location:', error);
+        displayError(`Failed to get weather for your location: ${error.message}`);
+      } finally {
+        hideLoadingState();
+      }
+    },
+    (error) => {
+      // Handle errors (PERMISSION_DENIED, POSITION_UNAVAILABLE, TIMEOUT)
+      console.error(`Geolocation Error (${error.code}): ${error.message}`);
+      let userMessage = 'Could not get your current location.';
+      if (error.code === error.PERMISSION_DENIED) {
+        userMessage = 'Location permission denied. Please enter a location manually.';
+      }
+      displayError(userMessage);
+      hideLoadingState(); // Hide loading indicator on error
+    }
+  );
+}
+
 
 // --- Application Start ---
 // Run the initialization function when the script loads
