@@ -1,25 +1,3 @@
-# js-template-webpack-eslint-prettier
+A simple weather forecast app built with vanilla JavaScript, using the Visual Crossing Weather API. Bundled with Webpack, and styled with plain CSS.
 
-A modern, minimal JavaScript starter with:
-
-- Webpack (modular config)
-- ESLint
-- Prettier
-- NPM scripts for build/dev/lint/format
-- CSS support with style-loader + css-loader
-
----
-
-You can use this repo as a **starter for any Vanilla JS project**.
-
-How to Use This Template?
-
-1. Click **“Use this template”** at the top of this repo on GitHub
-
-2. Name your new repo (e.g., `to-do-app`)
-
-3. Clone it:
-
-   git clone https://github.com/YOUR_USERNAME/YOUR_NEW_PROJECT.git
-   cd YOUR_NEW_PROJECT
-   npm install
+[Live Demo](https://aneesh199608.github.io/weather-app)
