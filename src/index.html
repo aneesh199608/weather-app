@@ -1,9 +1,32 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-  </head>
-  <body></body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <!-- The CSS bundle will be injected here by HtmlWebpackPlugin -->
+</head>
+<body>
+    <h1>Weather App</h1>
+
+    <form id="search-form">
+        <label for="location-input">Enter Location:</label>
+        <input type="text" id="location-input" placeholder="e.g., London, UK" required>
+        <button type="submit" id="search-button">Get Weather</button>
+    </form>
+
+    <div id="loading-indicator" style="display: none;">Loading...</div>
+    <div id="error-message" style="display: none; color: red;"></div>
+
+    <div id="weather-display" style="display: none; margin-top: 20px; border: 1px solid #ccc; padding: 15px;">
+        <h2 id="location-name"></h2>
+        <!-- <img id="weather-icon" src="" alt="Weather icon" style="display: none; width: 50px; height: 50px;"> -->
+        <p id="temperature" style="font-size: 1.5em;"></p>
+        <p id="conditions"></p>
+        <p id="humidity"></p>
+        <p id="wind-speed"></p>
+    </div>
+
+    <!-- The JS bundle will be injected here by HtmlWebpackPlugin -->
+</body>
 </html>
